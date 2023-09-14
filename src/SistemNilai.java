@@ -1,9 +1,10 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SistemNilai {
-    public final List<Dosen> dosenList;
+    private final List<Dosen> dosenList;
     private final List<Mahasiswa> mahasiswaList;
     private final List<Nilai> nilaiList;
 
@@ -21,34 +22,33 @@ public class SistemNilai {
         mahasiswaList.addAll(Arrays.asList(obj));
     }
 
-    public boolean isDosenNonValid(Dosen dosen) {
-        return dosenList.stream().noneMatch(dosen1 -> dosen1.equals(dosen));
-    }
     public void addNilai(Nilai objNilai) {
-        if (objNilai == null) {
-            System.out.println("Cannot adding nilai, cause matkul not valid");
-            return;
-        }
         nilaiList.add(objNilai);
     }
 
     public boolean isMahasiswaNonValid(Mahasiswa mahasiswa) {
         return mahasiswaList.stream().noneMatch(mahasiswa1 -> mahasiswa1.equals(mahasiswa));
     }
-    private Nilai searchNilai(Mahasiswa mahasiswa) {
-        return nilaiList.stream().filter(nilai -> nilai.mahasiswa().equals(mahasiswa)).findFirst().orElse(null);
-    }
-    public void printEvaluation(Mahasiswa mahasiswa) {
-        Nilai objNilai = searchNilai(mahasiswa);
 
-        if (objNilai == null) {
+    public Dosen searchDosen(Dosen dosen) {
+        return dosenList.stream().filter(dosen1 -> dosen1.equals(dosen)).findFirst().orElse(null);
+    }
+
+    public Mahasiswa searchMahsiswa(Mahasiswa mahasiswa) {
+        return mahasiswaList.stream().filter(mahasiswa1 -> mahasiswa1.equals(mahasiswa)).findFirst().orElse(null);
+    }
+
+    private List<Nilai> searchListNilai(Mahasiswa mahasiswa) {
+        return nilaiList.stream().filter(nilai -> nilai.mahasiswa().equals(mahasiswa)).collect(Collectors.toList());
+    }
+
+    public void printEvaluation(Mahasiswa mahasiswa) {
+        List<Nilai> listNilaiMahasiswa = searchListNilai(mahasiswa);
+
+        if (listNilaiMahasiswa.isEmpty()) {
             System.out.println("Nilai is undefined");
             return;
         }
-        System.out.println(objNilai);
+        listNilaiMahasiswa.forEach(System.out::println);
     }
-
-
-
-
 }

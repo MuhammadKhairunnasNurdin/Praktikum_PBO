@@ -9,8 +9,12 @@ public class Mahasiswa {
         this.nim = nim;
     }
 
-    public void printEvaluation(SistemNilai sistemNilai) {
-        sistemNilai.printEvaluation(this);
+    @Override
+    public String toString() {
+        return "Mahasiswa{" +
+                "nama='" + nama + '\'' +
+                ", nim='" + nim + '\'' +
+                '}';
     }
 
     @Override
@@ -20,19 +24,23 @@ public class Mahasiswa {
         return Objects.equals(nama, mahasiswa.nama) && Objects.equals(nim, mahasiswa.nim);
     }
 
-    public static Mahasiswa loginMahasiswa(Scanner input) {
+    public static Mahasiswa loginMahasiswa(SistemNilai sistemNilai, Scanner input) {
         System.out.print("Login Mahasiswa\n===================================\nNama: ");
         String nama = input.nextLine();
         System.out.print("Nim: ");
         String nim = input.nextLine();
-        return new Mahasiswa(nama, nim);
+        Mahasiswa mahasiswa = sistemNilai.searchMahsiswa(new Mahasiswa(nama, nim));
+
+        if (mahasiswa == null) {
+            System.out.println("Cannot to login, try input again");
+            return loginMahasiswa(sistemNilai, input);
+        }
+        System.out.println("Login success\n==============================");
+        return mahasiswa;
     }
 
-    @Override
-    public String toString() {
-        return "Mahasiswa{" +
-                "nama='" + nama + '\'' +
-                ", nim='" + nim + '\'' +
-                '}';
+    public void printEvaluation(SistemNilai sistemNilai) {
+        sistemNilai.printEvaluation(this);
     }
+
 }
